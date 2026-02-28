@@ -25,6 +25,7 @@
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.1.0/model-viewer.min.js"></script>
   <script src="./static/js/index.js"></script>
   <script src="./static/js/open_in_new_tab.js"></script>
+  <script src="./static/js/sync_video.js"></script>
 </head>
 <body>
 
@@ -38,15 +39,15 @@
           <div class="is-size-5 publication-authors">
             <span class="author-block"><a href="https://how-to.fun">Junjie Fang</a><sup>1*</sup>,</span>
             <span class="author-block"><a href="https://wendichen.me">Wendi Chen</a><sup>12*</sup>,</span>
-            <span class="author-block"><a href="https://hanxue.me">Han Xue</a><sup>1*</sup>,</span>
+            <span class="author-block"><a href="https://hanxue.me">Han Xue</a><sup>13*\(\dagger\)</sup>,</span>
             <span class="author-block"><a href="https://uimicro.com/">Fangyuan Zhou</a><sup>12*</sup>,</span>
             <br>
             <span class="author-block">Tian Le<sup>13</sup>,</span>
             <span class="author-block">Yi Wang<sup>12</sup>,</span>
             <span class="author-block">Yuting Zhang<sup>3</sup>,</span>
             <span class="author-block"><a href="https://lyuj1998.github.io">Jun Lv</a><sup>3</sup>,</span>
-            <span class="author-block"><a href="https://alvinwen428.github.io">Chuan Wen</a><sup>1\(\dagger\)</sup>,</span>
-            <span class="author-block"><a href="https://www.mvig.org">Cewu Lu</a><sup>123\(\dagger\)</sup></span>
+            <span class="author-block"><a href="https://alvinwen428.github.io">Chuan Wen</a><sup>1\(\ddagger\)</sup>,</span>
+            <span class="author-block"><a href="https://www.mvig.org">Cewu Lu</a><sup>123\(\ddagger\)</sup></span>
           </div>
           <div class="is-size-5 publication-authors">
             <span class="author-block"><sup>1</sup>Shanghai Jiao Tong University,</span>
@@ -55,7 +56,8 @@
           </div>
           <div class="is-size-5 publication-authors">
             <span class="author-block"><sup>*</sup>Equal contribution</span>
-            <span class="author-block"><sup>\(\dagger\)</sup>Equal advising</span>
+            <span class="author-block"><sup>\(\dagger\)</sup>Project lead</span>
+            <span class="author-block"><sup>\(\ddagger\)</sup>Corresponding authors</span>
           </div>
           <div class="column has-text-centered">
             <div class="publication-links">
@@ -107,7 +109,7 @@
               This immersive feedback allows collectors to proactively identify potential failures and focus data collection on the policy's weak regions without requiring a physical robot.
               Furthermore, we implement an asynchronous <strong>Online Finetuning</strong> pipeline that continuously updates the policy with incoming data, effectively closing the learning loop in minutes.
               Extensive experiments demonstrate that RoboPocket adheres to data scaling laws and doubles the data efficiency compared to offline scaling strategies, overcoming their long-standing efficiency bottleneck.
-              Moreover, our instant iteration loop also boosts sample efficiency by up to 2\(\times\) in distributed environments a small number of interactive corrections per person.
+              Moreover, our instant iteration loop also boosts sample efficiency by up to 2x in distributed environments a small number of interactive corrections per person.
           </p>
         </div>
       </div>
@@ -204,6 +206,212 @@
         </video>
         <p class="content is-size-6" style="color: red;">Correction</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Experiments</h2>
+
+    <h3 class="title is-4">System Capability Verification</h3>
+    <div class="content has-text-justified">
+      <p>
+        We measure tracking accuracy by rigidly attaching RoboPocket to the robot end-effector, achieving 2.8mm position error and 0.4° rotation error for single-device setups—outperforming UMI's 6.1mm and 3.5°.
+      </p>
+      <p>
+        To validate data quality for scaling, we collect 1,600 demonstrations across 64 environment-object pairs for a Mouse Arrangement task, confirming <strong>strong power-law correlation (r = -0.962) with data diversity</strong>.
+      </p>
+    </div>
+    <div class="content has-text-centered">
+      <img src="./static/images/scaling_law.png" alt="Data Scaling Laws" width="100%">
+    </div>
+
+    <h3 class="title is-4">Beyond Data Scaling Laws</h3>
+    <div class="content has-text-justified">
+      <p>
+        We evaluate our <strong>Robot-Free Instant Policy Iteration (IL + Instant PI)</strong> on four challenging manipulation tasks:
+      </p>
+      <ul>
+        <li><strong>Block Sorting</strong>: long-horizon sequential dependency</li>
+        <li><strong>Seasoning Pouring</strong>: aggressive wrist rotations</li>
+        <li><strong>Towel Folding</strong>: deformable object perception</li>
+        <li><strong>Snack Bagging</strong>: bimanual coordination</li>
+      </ul>
+      <p>
+        We compare our method against three baselines:
+      </p>
+      <ul>
+        <li><strong>IL Only</strong>: fixed datasets of N=100, 200, 300</li>
+        <li><strong>IL + Manual PI</strong>: expert analyzes robot failures and collects 25-50 corrections</li>
+        <li><strong>IL + Offline PI</strong>: corrections via RoboPocket with fixed pretrained model</li>
+      </ul>
+      <p>
+        Our method consistently achieves up to <strong>2× data efficiency</strong> compared to pure IL baselines across all tasks. For Block Sorting, IL + Instant PI achieves performance comparable to expert manual intervention without requiring a physical robot. In Seasoning Pouring, our approach matches 300 IL performance with fewer data while maintaining significantly lower variance (0.08 vs 0.30 for Offline PI). For Towel Folding, only our method achieves stable gains (0.88), while IL + Manual PI causes performance degradation (0.73 → 0.50). In Snack Bagging, our method efficiently surpasses the 300 IL baseline (0.56 vs 0.51).
+      </p>
+    </div>
+    <div class="content has-text-centered">
+      <img src="./static/images/beyond_scaling_law.png" alt="Beyond Data Scaling Laws" width="100%">
+    </div>
+
+    <h4 class="title is-5">Videos</h4>
+
+    <div class="columns is-centered">
+      <div class="column is-5 has-text-centered result">
+        <video id="block-sorting-il-only" class="block-sorting" controls muted playsinline width="100%"><source src="./static/videos/block_sorting_il_only.mp4" type="video/mp4"></video>
+        <span id="block-sorting-il-only_begin" class="is-size-6 method_name">
+          IL Only
+        </span>
+        <span id="block-sorting-il-only_end" class="is-size-6 failed_method_name" style="display: none;">
+          IL Only, Grasp the wrong block
+        </span>
+      </div>
+      <div class="column is-5 has-text-centered result">
+        <video id="block-sorting-ours" class="block-sorting" controls muted playsinline width="100%"><source src="./static/videos/block_sorting_ours.mp4" type="video/mp4"></video>
+        <span id="block-sorting-ours_begin" class="is-size-6 method_name">
+          IL + Instant PI (Ours)
+        </span>
+        <span id="block-sorting-ours_end" class="is-size-6 success_method_name" style="display: none;">
+          IL + Instant PI (Ours), Success
+        </span>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-5 has-text-centered result">
+        <video id="seasoning-pouring-il-only" class="seasoning-pouring" controls muted playsinline width="100%"><source src="./static/videos/seasoning_pouring_il_only.mp4" type="video/mp4"></video>
+        <span id="seasoning-pouring-il-only_begin" class="is-size-6 method_name">
+          IL Only
+        </span>
+        <span id="seasoning-pouring-il-only_end" class="is-size-6 failed_method_name" style="display: none;">
+          IL Only, Poor localization
+        </span>
+      </div>
+      <div class="column is-5 has-text-centered result">
+        <video id="seasoning-pouring-ours" class="seasoning-pouring" controls muted playsinline width="100%"><source src="./static/videos/seasoning_pouring_ours.mp4" type="video/mp4"></video>
+        <span id="seasoning-pouring-ours_begin" class="is-size-6 method_name">
+          IL + Instant PI (Ours)
+        </span>
+        <span id="seasoning-pouring-ours_end" class="is-size-6 success_method_name" style="display: none;">
+          IL + Instant PI (Ours), Success
+        </span>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-5 has-text-centered result">
+        <video id="towel-folding-il-only" class="towel-folding" controls muted playsinline width="100%"><source src="./static/videos/towel_folding_il_only.mp4" type="video/mp4"></video>
+        <span id="towel-folding-il-only_begin" class="is-size-6 method_name">
+          IL Only
+        </span>
+        <span id="towel-folding-il-only_end" class="is-size-6 failed_method_name" style="display: none;">
+          IL Only, Sensitive to OOD situations
+        </span>
+      </div>
+      <div class="column is-5 has-text-centered result">
+        <video id="towel-folding-ours" class="towel-folding" controls muted playsinline width="100%"><source src="./static/videos/towel_folding_ours.mp4" type="video/mp4"></video>
+        <span id="towel-folding-ours_begin" class="is-size-6 method_name">
+          IL + Instant PI (Ours)
+        </span>
+        <span id="towel-folding-ours_end" class="is-size-6 success_method_name" style="display: none;">
+          IL + Instant PI (Ours), Success
+        </span>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-5 has-text-centered result">
+        <video id="snack-bagging-il-offline-pi" class="snack-bagging" controls muted playsinline width="100%"><source src="./static/videos/snack_bagging_il_offline_pi.mp4" type="video/mp4"></video>
+        <span id="snack-bagging-il-offline-pi_begin" class="is-size-6 method_name">
+          IL + Offline PI
+        </span>
+        <span id="snack-bagging-il-offline-pi_end" class="is-size-6 failed_method_name" style="display: none;">
+          IL + Offline PI, Overfit to a certain pattern
+        </span>
+      </div>
+      <div class="column is-5 has-text-centered result">
+        <video id="snack-bagging-ours" class="snack-bagging" controls muted playsinline width="100%"><source src="./static/videos/snack_bagging_ours.mp4" type="video/mp4"></video>
+        <span id="snack-bagging-ours_begin" class="is-size-6 method_name">
+          IL + Instant PI (Ours)
+        </span>
+        <span id="snack-bagging-ours_end" class="is-size-6 success_method_name" style="display: none;">
+          IL + Instant PI (Ours), Success
+        </span>
+      </div>
+    </div>
+
+    <h3 class="title is-4">Scalable and Generalizable Policy Iteration</h3>
+    <div class="content has-text-justified">
+      <p>
+        To validate the scalability and generalizability of our system in distributed settings, we deploy RoboPocket to four users operating across four distinct scenes. The experimental protocol consists of two phases: First, each user collects 25 demonstrations of the Block Sorting task in their respective environment, resulting in a base dataset of 100 demonstrations used to train an initial policy. Second, all four users simultaneously perform <strong>Robot-Free Instant Policy Iteration (IL + Instant PI)</strong>, each collecting 12 interactive corrections in their local environment.
+      </p>
+      <p>
+        The results demonstrate significant performance improvements across all environments. The base policy exhibits varying performance across scenes, with particularly challenging environments showing lower success rates (Scene 2: 0.42, Scene 4: 0.52). However, after distributed policy iteration with only 12 corrections per user, success rates improved dramatically (Scene 2: 0.42 → 0.82, Scene 4: 0.52 → 0.81). This highlights a critical advantage: while scaling offline data encounters diminishing returns across diverse scenarios, our system enables <strong>distributed effective finetuning</strong> that achieves robust generalization without requiring physical robot deployment in each environment.
+      </p>
+    </div>
+    <div class="content has-text-centered">
+      <img src="./static/images/distributed_generalization.png" alt="Distributed Generalization" width="100%">
+    </div>
+
+    <h4 class="title is-5">Videos</h4>
+
+    <div class="columns is-centered">
+      <div class="column is-5 has-text-centered result">
+        <video id="distributed-block-sorting-il-only" class="distributed-block-sorting" controls muted playsinline width="100%"><source src="./static/videos/distributed_block_sorting_il_only.mp4" type="video/mp4"></video>
+        <span id="distributed-block-sorting-il-only_begin" class="is-size-6 method_name">
+          IL Only
+        </span>
+        <span id="distributed-block-sorting-il-only_end" class="is-size-6 failed_method_name" style="display: none;">
+          IL Only, Failure
+        </span>
+      </div>
+      <div class="column is-5 has-text-centered result">
+        <video id="distributed-block-sorting-ours" class="distributed-block-sorting" controls muted playsinline width="100%"><source src="./static/videos/distributed_block_sorting_ours.mp4" type="video/mp4"></video>
+        <span id="distributed-block-sorting-ours_begin" class="is-size-6 method_name">
+          IL + Instant PI (Ours)
+        </span>
+        <span id="distributed-block-sorting-ours_end" class="is-size-6 success_method_name" style="display: none;">
+          IL + Instant PI (Ours), Success
+        </span>
+      </div>
+    </div>
+
+    <h3 class="title is-4">User Study</h3>
+
+    <h4 class="title is-5">Study Design</h4>
+    <div class="content has-text-justified">
+      <p>
+        To validate whether RoboPocket enables non-expert users to identify policy weaknesses and collect correction data in a robot-free setting, we conduct a user study with volunteers having varying levels of experience in imitation learning and UMI-based data collection. Participants are invited to perform the Block Sorting task using <strong>Robot-Free Instant Policy Iteration</strong>.
+      </p>
+    </div>
+    <div class="content has-text-centered">
+      <img src="./static/images/participant_demographics.png" alt="Participant Demographics" width="60%">
+    </div>
+
+    <h4 class="title is-5">User Study Results</h4>
+    <div class="content has-text-justified">
+      <p>
+        Regarding <strong>Real-time Active Verification</strong>, all users report that the real-time constraints and feedback mechanisms are beneficial for data collection, with over half rating them as "Very Helpful". For <strong>AR Virtual Foresight</strong>, all users agree that our AR Visual Foresight feature effectively assists in discovering model failure cases, with 7 out of 10 participants rating it as "Very Helpful". Most critically, 8 out of 10 users believe that <strong>Instant Policy Iteration</strong> is highly beneficial for realizing model improvement.
+      </p>
+      <p>
+        When asked about the most significant advantage of RoboPocket, the majority of users highlight the <strong>Real-time Uploading</strong> and <strong>Online Finetuning</strong> mechanisms make the collection process significantly more effective and engaging.
+      </p>
+    </div>
+    <div class="content has-text-centered">
+      <img src="./static/images/user_study_result.png" alt="User Study Results" width="80%">
+    </div>
+
+    <h4 class="title is-5">State Coverage Visualization</h4>
+    <div class="content has-text-justified">
+      <p>
+        To assess the quality of data collected by non-expert users, we perform a visualization analysis using PCA projection of DINOv2 features extracted from state observations. We compare the state coverage achieved by non-expert participants using <strong>Robot-Free Instant Policy Iteration</strong> against data collected by experienced experimenters.
+      </p>
+      <p>
+        The analysis reveals that our system enables non-expert users to achieve state coverage comparable to that of experienced experimenters. This validates that RoboPocket successfully democratizes high-quality data collection by providing guidance through <strong>AR Visual Foresight</strong>.
+      </p>
+    </div>
+    <div class="content has-text-centered">
+      <img src="./static/images/state_coverage.png" alt="State Coverage Visualization" width="40%">
     </div>
   </div>
 </section>

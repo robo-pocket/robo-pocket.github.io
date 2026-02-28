@@ -5,3 +5,27 @@
 .medium-video {
     border-radius: 15px;
 }
+
+.result {
+    margin: 5px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    padding: 0;
+    font-size: 0;
+}
+
+.method_name {
+    font-size: medium;
+}
+
+.failed_method_name {
+    font-size: medium;
+    color:red;
+}
+
+.success_method_name {
+    font-size: medium;
+    color:green;
+}
